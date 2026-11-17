@@ -1,4 +1,7 @@
 LEAD = {
+"only one thread can call this": "只有一个线程能调用这里",
+"end": "结束",
+
 "Code assumes that m1 != m2 (not the same lock)": "假定 m1 != m2（不是同一把锁）",
 "File descriptor": "文件描述符",
 "File offset": "文件偏移量",

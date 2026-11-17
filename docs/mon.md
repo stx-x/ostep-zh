@@ -13,12 +13,16 @@ title: "附录　管程"
 ```c
 monitor class account {
 private:
-int balance = 0;
+    int balance = 0;
+
 public:
-void deposit(int amount) {
-balance = balance + amount;
-void withdraw(int amount) {
-balance = balance - amount;
+    void deposit(int amount) {
+        balance = balance + amount;
+    }
+    void withdraw(int amount) {
+        balance = balance - amount;
+    }
+};
 ```
 
 <div class="code-cap"><span class="code-label">图 D.1</span>一个假想的管程类</div>
@@ -34,17 +38,21 @@ balance = balance - amount;
 ```c
 class account {
 private:
-int balance = 0;
-pthread_mutex_t monitor;
+    int balance = 0;
+    pthread_mutex_t monitor;
+
 public:
-void deposit(int amount) {
-pthread_mutex_lock(&monitor);
-balance = balance + amount;
-pthread_mutex_unlock(&monitor);
-void withdraw(int amount) {
-pthread_mutex_lock(&monitor);
-balance = balance - amount;
-pthread_mutex_unlock(&monitor);
+    void deposit(int amount) {
+        pthread_mutex_lock(&monitor);
+        balance = balance + amount;
+        pthread_mutex_unlock(&monitor);
+    }
+    void withdraw(int amount) {
+        pthread_mutex_lock(&monitor);
+        balance = balance - amount;
+        pthread_mutex_unlock(&monitor);
+    }
+};
 ```
 
 <div class="code-cap"><span class="code-label">图 D.2</span>一个行为类似管程的 C++ 类</div>
@@ -59,41 +67,33 @@ pthread_mutex_unlock(&monitor);
 
 ```c
 monitor class BoundedBuffer {
-private:
-int buffer[MAX];
-int fill, use;
-int fullEntries = 0;
-cond_t empty;
-cond_t full;
-public:
-void produce(int element) {
-if (fullEntries == MAX)
-// P0 行
-wait(&empty);
-// P1 行
-buffer[fill] = element;
-// P2 行
-fill = (fill + 1) % MAX;
-// P3 行
-fullEntries++;
-// P4 行
-signal(&full);
-// P5 行
-int consume() {
-if (fullEntries == 0)
-// C0 行
-wait(&full);
-// C1 行
-int tmp = buffer[use];
-// C2 行
-use = (use + 1) % MAX;
-// C3 行
-fullEntries--;
-// C4 行
-signal(&empty);
-// C5 行
-return tmp;
-// C6 行
+  private:
+    int buffer[MAX];
+    int fill, use;
+    int fullEntries = 0;
+    cond_t empty;
+    cond_t full;
+
+  public:
+    void produce(int element) {
+        if (fullEntries == MAX)    // line P0
+            wait(&empty);          // line P1
+        buffer[fill] = element;    // line P2
+        fill = (fill + 1) % MAX;   // line P3
+        fullEntries++;             // line P4
+        signal(&full);             // line P5
+    }
+
+    int consume() {
+        if (fullEntries == 0)      // line C0
+            wait(&full);           // line C1
+        int tmp = buffer[use];     // line C2
+        use = (use + 1) % MAX;     // line C3
+        fullEntries--;             // line C4
+        signal(&empty);            // line C5
+        return tmp;                // line C6
+    }
+}
 ```
 
 <div class="code-cap"><span class="code-label">图 D.3</span>使用管程与 Hoare 语义的生产者/消费者</div>
@@ -152,33 +152,24 @@ fullEnt=0!)
 
 ```c
 public:
-void produce(int element) {
-while (fullEntries == MAX) // P0 行（if 改为 while）
-wait(&empty);
-// P1 行
-buffer[fill] = element;
-// P2 行
-fill = (fill + 1) % MAX;
-// P3 行
-fullEntries++;
-// P4 行
-signal(&full);
-// P5 行
-int consume() {
-while (fullEntries == 0)
-// C0 行（if 改为 while）
-wait(&full);
-// C1 行
-int tmp = buffer[use];
-// C2 行
-use = (use + 1) % MAX;
-// C3 行
-fullEntries--;
-// C4 行
-signal(&empty);
-// C5 行
-return tmp;
-// C6 行
+  void produce(int element) {
+    while (fullEntries == MAX) // P0 行（if 改为 while）
+      wait(&empty);          // line P1
+    buffer[fill] = element;    // line P2
+    fill = (fill + 1) % MAX;   // line P3
+    fullEntries++;             // line P4
+    signal(&full);             // line P5
+  }
+
+  int consume() {
+    while (fullEntries == 0)   // line C0 (CHANGED IF->WHILE)
+      wait(&full);           // line C1
+    int tmp = buffer[use];     // line C2
+    use = (use + 1) % MAX;     // line C3
+    fullEntries--;             // line C4
+    signal(&empty);            // line C5
+    return tmp;                // line C6
+  }
 ```
 
 <div class="code-cap"><span class="code-label">图 D.5</span>使用管程与 Mesa 语义的生产者/消费者</div>
@@ -202,19 +193,21 @@ return tmp;
 在关于 Mesa 的论文中，Lampson 和 Redell 还指出了几处需要另一种发信号方式的场合。例如，考虑下面这个内存分配器（图 D.7）。
 
 ```c
-monitor class allocator {
-int available; // 还有多少内存可用？
-cond_t c;
-void *allocate(int size) {
-while (size > available)
-wait(&c);
-available -= size;
-// 然后再做分配器该做的事
-// 并返回一块内存
-void free(void *pointer, int size) {
-// 释放一些内存
-available += size;
-signal(&c);
+monitor class Semaphore {
+    int s; // 信号量的值
+    Semaphore(int value) {
+        s = value;
+    }
+    void wait() {
+        while (s <= 0)
+            wait();
+        s--;
+    }
+    void post() {
+        s++;
+        signal();
+    }
+};
 ```
 
 <div class="code-cap"><span class="code-label">图 D.7</span>一个简单的内存分配器</div>
@@ -230,15 +223,7 @@ signal(&c);
 你大概已经看出管程和信号量有很多相似之处。不出所料，两者可以互相实现。下面我们展示如何用管程实现一个信号量类（图 D.8）。
 
 ```c
-monitor class Semaphore {
-int s; // 信号量的值
-Semaphore(int value) {
-s = value;
-void wait() {
-while (s <= 0)
-wait();
-void post() {
-signal();
+MONITORS (DEPRECATED)
 ```
 
 <div class="code-cap"><span class="code-label">图 D.8</span>用管程实现一个信号量</div>
