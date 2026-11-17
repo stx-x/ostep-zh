@@ -18,7 +18,7 @@ CH = [
 
 stats = []
 for key, title, en, num in CH:
-    p = 'chapters/%s.md' % key
+    p = '%s.md' % key
     if not os.path.exists(p):
         print('MISSING', p)
         continue

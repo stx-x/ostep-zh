@@ -6,6 +6,8 @@ title: "附录　管程"
 
 <div class="chap-en">Monitors</div>
 
+<div class="chap-en">Monitors</div>
+
 在并发编程开始大行其道的那个年代，面向对象编程也在逐步兴起。毫不意外，人们开始琢磨怎样才能把同步机制融入一个更有结构的编程环境。
 
 由此产生的一种做法就是**管程**（monitor）。它最早由 Per Brinch Hansen 提出 [BH73]，后来由 Tony Hoare 加以完善 [H74]；管程背后的想法其实相当简单。看看下面这个用 C++ 记法写的“假想”管程：
