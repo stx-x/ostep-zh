@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import container from 'markdown-it-container'
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -22,6 +23,24 @@ export default defineConfig({
     lineNumbers: false,
     image: { lazyLoading: true },
     theme: { light: 'vitesse-light', dark: 'vitesse-dark' },
+    config: (md) => {
+      // VitePress 内置只有 tip/info/warning/danger/details，这里注册 OSTEP 的 crux / aside
+      const make = (name: string) => ({
+        render(tokens: any[], idx: number) {
+          const token = tokens[idx]
+          if (token.nesting === 1) {
+            const info = token.info.trim().slice(name.length).trim()
+            const title = info
+              ? `<p class="custom-block-title">${md.utils.escapeHtml(info)}</p>\n`
+              : ''
+            return `<div class="custom-block ${name}">${title}`
+          }
+          return '</div>\n'
+        },
+      })
+      md.use(container, 'crux', make('crux'))
+      md.use(container, 'aside', make('aside'))
+    },
   },
 
   themeConfig: {

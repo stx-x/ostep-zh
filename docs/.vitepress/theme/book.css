@@ -1558,3 +1558,106 @@ table.book-table code {
   .vp-doc blockquote.book-quote { margin: 2.2em 0.2em; padding: 1.3em 0; }
   .vp-doc blockquote.book-quote cite { text-align: left; }
 }
+
+/* ---------- CRUX：关键问题 ---------- */
+.vp-doc .custom-block.crux {
+  position: relative;
+  margin: 2.2em 0;
+  padding: 1.3em 1.5em 1.35em;
+  border: 1px solid #ecdcc8;
+  border-left: 3px solid var(--book-accent);
+  border-radius: 4px 12px 12px 4px;
+  background: linear-gradient(150deg, #fdfaf6 0%, #fbf6ef 100%);
+  box-shadow: 0 1px 2px rgba(120, 90, 50, 0.04);
+}
+
+.dark .vp-doc .custom-block.crux {
+  background: #221f1a;
+  border-color: #3a3228;
+  border-left-color: var(--book-accent);
+  box-shadow: none;
+}
+
+.vp-doc .custom-block.crux .custom-block-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  margin: 0 0 0.7em;
+  padding: 0;
+  font-family: var(--book-sans);
+  font-size: calc(13.4px * var(--book-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #a4560a;
+}
+
+.dark .vp-doc .custom-block.crux .custom-block-title { color: #d9944a; }
+
+.vp-doc .custom-block.crux .custom-block-title::before {
+  content: "";
+  display: block !important;
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--book-accent);
+}
+
+.vp-doc .custom-block.crux p {
+  color: #3b342c;
+  font-size: calc(16.1px * var(--book-scale, 1));
+  line-height: 1.96;
+}
+
+.dark .vp-doc .custom-block.crux p { color: #c0b6a8; }
+
+/* ---------- ASIDE：边注 ---------- */
+.vp-doc .custom-block.aside {
+  position: relative;
+  margin: 2em 0;
+  padding: 1.1em 1.4em 1.15em;
+  border: 1px solid #e6e9ee;
+  border-radius: 10px;
+  background: #f8f9fb;
+}
+
+.dark .vp-doc .custom-block.aside {
+  background: #1b1e24;
+  border-color: #2a303a;
+}
+
+.vp-doc .custom-block.aside .custom-block-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0 0 0.55em;
+  font-family: var(--book-sans);
+  font-size: calc(11.8px * var(--book-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #6b7889;
+}
+
+.dark .vp-doc .custom-block.aside .custom-block-title { color: #8b97a8; }
+
+.vp-doc .custom-block.aside .custom-block-title::before {
+  content: "";
+  display: block !important;
+  width: 12px;
+  height: 1px;
+  flex: none;
+  background: #9aa7b6;
+}
+
+.vp-doc .custom-block.aside p {
+  color: #4a5462;
+  font-size: calc(15.2px * var(--book-scale, 1));
+  line-height: 1.9;
+}
+
+.dark .vp-doc .custom-block.aside p { color: #a8b2c0; }
+
+@media (max-width: 640px) {
+  .vp-doc .custom-block.crux { padding: 1.1em 1.15em; border-radius: 3px 10px 10px 3px; }
+  .vp-doc .custom-block.aside { padding: 1em 1.1em; }
+}
