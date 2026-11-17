@@ -25,6 +25,7 @@ for key, title, en, num in CH:
     s = open(p).read()
     s = re.sub(r'^---[\s\S]*?---\s*', '', s)          # 去已有 frontmatter
     s = re.sub(r'^#\s+[^\n]*\n', '', s)               # 去已有 h1
+    s = re.sub(r'<div class="chap-en">[^<]*</div>', '', s)  # 去重复英文标题
     head = '---\ntitle: "%s"\n---\n\n# %s\n\n<div class="chap-en">%s</div>\n\n' % (title, title, en)
     open(p, 'w').write(head + s.strip() + '\n')
     cn = len(re.findall(r'[\u4e00-\u9fff]', s))
