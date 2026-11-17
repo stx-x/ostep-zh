@@ -1,0 +1,17 @@
+{
+  "name": "ospp-zh",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "markdown-it-mathjax3": "^4.3.2",
+    "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "markdown-it-container": "^4.0.0"
+  }
+}
