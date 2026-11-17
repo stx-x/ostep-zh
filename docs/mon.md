@@ -68,32 +68,32 @@ cond_t full;
 public:
 void produce(int element) {
 if (fullEntries == MAX)
-// line P0
+// P0 行
 wait(&empty);
-// line P1
+// P1 行
 buffer[fill] = element;
-// line P2
+// P2 行
 fill = (fill + 1) % MAX;
-// line P3
+// P3 行
 fullEntries++;
-// line P4
+// P4 行
 signal(&full);
-// line P5
+// P5 行
 int consume() {
 if (fullEntries == 0)
-// line C0
+// C0 行
 wait(&full);
-// line C1
+// C1 行
 int tmp = buffer[use];
-// line C2
+// C2 行
 use = (use + 1) % MAX;
-// line C3
+// C3 行
 fullEntries--;
-// line C4
+// C4 行
 signal(&empty);
-// line C5
+// C5 行
 return tmp;
-// line C6
+// C6 行
 ```
 
 <div class="code-cap"><span class="code-label">图 D.3</span>使用管程与 Hoare 语义的生产者/消费者</div>
@@ -153,32 +153,32 @@ fullEnt=0!)
 ```c
 public:
 void produce(int element) {
-while (fullEntries == MAX) // line P0 (CHANGED IF->WHILE)
+while (fullEntries == MAX) // P0 行（if 改为 while）
 wait(&empty);
-// line P1
+// P1 行
 buffer[fill] = element;
-// line P2
+// P2 行
 fill = (fill + 1) % MAX;
-// line P3
+// P3 行
 fullEntries++;
-// line P4
+// P4 行
 signal(&full);
-// line P5
+// P5 行
 int consume() {
 while (fullEntries == 0)
-// line C0 (CHANGED IF->WHILE)
+// C0 行（if 改为 while）
 wait(&full);
-// line C1
+// C1 行
 int tmp = buffer[use];
-// line C2
+// C2 行
 use = (use + 1) % MAX;
-// line C3
+// C3 行
 fullEntries--;
-// line C4
+// C4 行
 signal(&empty);
-// line C5
+// C5 行
 return tmp;
-// line C6
+// C6 行
 ```
 
 <div class="code-cap"><span class="code-label">图 D.5</span>使用管程与 Mesa 语义的生产者/消费者</div>
@@ -203,16 +203,16 @@ return tmp;
 
 ```c
 monitor class allocator {
-int available; // how much memory is available?
+int available; // 还有多少内存可用？
 cond_t c;
 void *allocate(int size) {
 while (size > available)
 wait(&c);
 available -= size;
-// and then do whatever the allocator should do
-// and return a chunk of memory
+// 然后再做分配器该做的事
+// 并返回一块内存
 void free(void *pointer, int size) {
-// free up some memory
+// 释放一些内存
 available += size;
 signal(&c);
 ```
@@ -231,7 +231,7 @@ signal(&c);
 
 ```c
 monitor class Semaphore {
-int s; // value of the semaphore
+int s; // 信号量的值
 Semaphore(int value) {
 s = value;
 void wait() {
@@ -261,7 +261,7 @@ private:
 int buffer[MAX];
 int fill, use;
 int fullEntries;
-pthread_mutex_t monitor; // monitor lock
+pthread_mutex_t monitor; // 管程锁
 pthread_cond_t empty;
 pthread_cond_t full;
 public:
