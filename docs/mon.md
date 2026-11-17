@@ -241,36 +241,26 @@ MONITORS (DEPRECATED)
 下面是用锁和条件变量写成的 C++ 版生产者/消费者代码（图 D.9）。
 
 ```c
-class BoundedBuffer {
-private:
-int buffer[MAX];
-int fill, use;
-int fullEntries;
-pthread_mutex_t monitor; // 管程锁
-pthread_cond_t empty;
-pthread_cond_t full;
-public:
-BoundedBuffer() {
-use = fill = fullEntries = 0;
-void produce(int element) {
-pthread_mutex_lock(&monitor);
-while (fullEntries == MAX)
-pthread_cond_wait(&empty, &monitor);
-buffer[fill] = element;
-fill = (fill + 1) % MAX;
-fullEntries++;
-pthread_cond_signal(&full);
-pthread_mutex_unlock(&monitor);
-int consume() {
-pthread_mutex_lock(&monitor);
-while (fullEntries == 0)
-pthread_cond_wait(&full, &monitor);
-int tmp = buffer[use];
-use = (use + 1) % MAX;
-fullEntries--;
-pthread_cond_signal(&empty);
-pthread_mutex_unlock(&monitor);
-return tmp;
+            pthread_cond_wait(&empty, &monitor);
+        buffer[fill] = element;
+        fill = (fill + 1) % MAX;
+        fullEntries++;
+        pthread_cond_signal(&full);
+        pthread_mutex_unlock(&monitor);
+    }
+
+    int consume() {
+        pthread_mutex_lock(&monitor);
+        while (fullEntries == 0)
+            pthread_cond_wait(&full, &monitor);
+        int tmp = buffer[use];
+        use = (use + 1) % MAX;
+        fullEntries--;
+        pthread_cond_signal(&empty);
+        pthread_mutex_unlock(&monitor);
+        return tmp;
+    }
+}
 ```
 
 <div class="code-cap"><span class="code-label">图 D.9</span>用 C++ 实现的“管程式”生产者/消费者</div>
