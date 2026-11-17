@@ -42,8 +42,8 @@ title: 操作系统导论 · 并发
 <div class="cover-stats">
 <span><b>10</b> 章</span>
 <span><b>1</b> 篇附录</span>
-<span><b>6.1</b> 万字</span>
-<span><b>46</b> 幅插图</span>
+<span><b>5.7</b> 万字</span>
+<span><b>40</b> 幅插图</span>
 </div>
 
 <div class="cover-actions">
