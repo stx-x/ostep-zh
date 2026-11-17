@@ -5,3 +5,4 @@ docs/.vitepress/cache/
 src/
 pdf/
 .DS_Store
+package-lock.json
